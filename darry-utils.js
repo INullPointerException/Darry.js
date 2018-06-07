@@ -183,6 +183,18 @@
       }else{
         return false;
       }
+    },
+
+
+    /*获取光标选中的文本 */
+    getSelectedText: function(){
+      var txt = '';
+      if(document.selection){
+          txt = document.selection.createRange().text;//ie
+      }else{
+          txt = document.getSelection();
+      }
+      return txt.toString();
     }
 
   };
