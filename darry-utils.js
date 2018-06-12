@@ -184,8 +184,6 @@
         return false;
       }
     },
-
-
     /*获取光标选中的文本 */
     getSelectedText: function(){
       var txt = '';
@@ -195,8 +193,36 @@
           txt = document.getSelection();
       }
       return txt.toString();
-    }
+    },
+    
+    timestampToTime: function(timestamp) {
+          //时间戳为10位需*1000，时间戳为13位的话不需乘1000
+          if(timestamp.toString().length === 10){
+              timestamp *= 1000;
+          }
+          var date = new Date(timestamp);
+          Y = date.getFullYear() + '-';
+          M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+          D = date.getDate() + ' ';
+          h = date.getHours() + ':';
+          m = date.getMinutes() + ':';
+          s = date.getSeconds();
+          return Y+M+D+h+m+s;
+      },
 
+      removeTextOfArray: function (array, removeText) {
+        var dx = -1;
+        for (var i = 0, n = 0; i < array.length; i++) {
+          if(array[i] === removeText){
+            dx = i;
+            break;
+          }
+        }
+        if(dx === -1){
+          return false;
+        }
+        array.splice(dx,1);
+      }
   };
 
   window.DarryUtils = DarryUtils;
