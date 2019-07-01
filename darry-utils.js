@@ -217,7 +217,38 @@
         })(types[i]);
       }
       return Type;
-    })()
+    })(),
+
+    /**
+     * 函数节流， 防止函数频繁被调用
+     * @param { 需要节流处理的寒素 } fn 
+     * @param { 防止重复调用的时间间隔 } interval 
+     */
+    throttle: function(fn, interval) {
+      var __self = fn,
+        timer,
+        firstTime = true;
+    
+      return function() {
+        var args = arguments,
+          __me = this;
+    
+        if (firstTime) {
+          __self.apply(__me, args);
+          return (firstTime = false);
+        }
+    
+        if (timer) {
+          return false;
+        }
+    
+        timer = setTimeout(function() {
+          // 延迟一段时间执行 clearTimeout(timer);
+          timer = null;
+          __self.apply(__me, args);
+        }, interval || 500);
+      };
+    }
   };
 
 
