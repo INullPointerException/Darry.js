@@ -12,9 +12,22 @@
 <body>
   <h1>test text!!!</h1>
   <script>
-    window.onresize = DarryUtils.common.throttle(function () {
-      console.log(1);
-    }, 500);
+    // window.onresize = DarryUtils.common.throttle(function () {
+    //   console.log(1);
+    // }, 500);
+
+    var arr = [];
+    for (var i = 1; i < 1000; i++) {
+      arr.push(i);
+    }
+
+    var renderFriendList = DarryUtils.common.timeThunk(arr, function (n) {
+      var div = document.createElement('div');
+      div.innerHTML = n;
+      document.body.appendChild(div);
+    });
+
+    renderFriendList();
   </script>
 </body>
 

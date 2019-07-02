@@ -40,7 +40,7 @@
   };
 
   var CommonUtils = {
-    //身份证号合法性校验
+    //身份证号合法性校验,可以校验15位和18位的身份证号
     IdentityCodeValid: function(sfzh) {
       var checkMonthDay = function(year, month, day) {
         switch (month) {
@@ -142,7 +142,7 @@
           var year = parseInt("19" + sfzh.substr(6, 2));
           var month = sfzh.substr(8, 2);
           var day = parseInt(sfzh.substr(10, 2));
-          if (!this.checkMonthDay(year, month, day)) {
+          if (!checkMonthDay(year, month, day)) {
             return false;
           } else {
             return true;
@@ -154,7 +154,7 @@
           var year = parseInt(sfzh.substr(6, 4));
           var month = sfzh.substr(10, 2);
           var day = parseInt(sfzh.substr(12, 2));
-          if (!this.checkMonthDay(year, month, day)) return false;
+          if (!checkMonthDay(year, month, day)) return false;
           sfzh = sfzh.split("");
           //∑(ai×Wi)(mod 11)
           //加权因子
@@ -207,11 +207,11 @@
     Types: (function() {
       var Type = {};
       var types = ["String", "Array", "Number"];
-      for (var i = 0; i < types.length ; i++ ) {
+      for (var i = 0; i < types.length; i++) {
         (function(type) {
           Type["is" + type] = function(obj) {
             return (
-              Object.prototype.toString.call(obj) == "[object "+ type +"]"
+              Object.prototype.toString.call(obj) == "[object " + type + "]"
             );
           };
         })(types[i]);
@@ -221,41 +221,95 @@
 
     /**
      * 函数节流， 防止函数频繁被调用
-     * @param { 需要节流处理的寒素 } fn 
-     * @param { 防止重复调用的时间间隔 } interval 
+     * @param { 需要节流处理的寒素 } fn
+     * @param { 防止重复调用的时间间隔 } interval
      */
     throttle: function(fn, interval) {
       var __self = fn,
         timer,
         firstTime = true;
-    
+
       return function() {
         var args = arguments,
           __me = this;
-    
+
         if (firstTime) {
           __self.apply(__me, args);
           return (firstTime = false);
         }
-    
+
         if (timer) {
           return false;
         }
-    
+
         timer = setTimeout(function() {
           // 延迟一段时间执行 clearTimeout(timer);
           timer = null;
           __self.apply(__me, args);
         }, interval || 500);
       };
+    },
+
+    /**
+     * 分时函数
+     * @param {分时处理的数据} arr 
+     * @param {分时处理每一个数据的回调函数} fn 
+     * @param {分时处理数据每批次处理的数据个数} count 
+     */
+    timeThunk: function(arr, fn, count) {
+      var obj, t;
+
+      var len = arr.length;
+
+      var start = function() {
+        for (var i = 0; i < Math.min(count || 1, arr.length); i++) {
+          var obj = arr.shift();
+          fn(obj);
+        }
+      };
+
+      return function() {
+        t = setInterval(function() {
+          if (arr.length === 0) {
+            return clearInterval(t);
+          }
+          start();
+        }, 200);
+      };
     }
   };
 
+  var EventUtils = {
+
+    /**
+     * 事件绑定函数，兼容浏览器的不同方式的事件绑定
+     * @param {绑定事件的元素} elem 
+     * @param {绑定事件的类型} type 
+     * @param {绑定事件的处理函数} handler 
+     */
+    addEvent: function(elem, type, handler) {
+      if (window.addEventListener) {
+        addEvent = function(elem, type, handler) {
+          elem.addEventListener(type, handler, false);
+        };
+      } else if (window.attachEvent) {
+        addEvent = function(elem, type, handler) {
+          elem.attachEvent("on" + type, handler);
+        };
+      }
+      addEvent(elem, type, handler);
+    }
+  };
 
   var DarryUtils = {
     common: CommonUtils,
     time: TimeUtils,
-    array: ArrayUtils
+    array: ArrayUtils,
+    event: EventUtils
+  };
+
+  DarryUtils.desc = function () {
+    console.log(DarryUtils);
   };
 
   window.DarryUtils = DarryUtils;
