@@ -252,9 +252,9 @@
 
     /**
      * 分时函数
-     * @param {分时处理的数据} arr 
-     * @param {分时处理每一个数据的回调函数} fn 
-     * @param {分时处理数据每批次处理的数据个数} count 
+     * @param {分时处理的数据} arr
+     * @param {分时处理每一个数据的回调函数} fn
+     * @param {分时处理数据每批次处理的数据个数} count
      */
     timeThunk: function(arr, fn, count) {
       var obj, t;
@@ -276,16 +276,37 @@
           start();
         }, 200);
       };
+    },
+
+    /**
+     * 快速定义划分命名空间的对象
+     */
+    defineNamespaceObj: function(namespaceArr) {
+      var obj = {};
+      obj.namespace = function(name) {
+        var parts = name.split(".");
+        var current = obj;
+        for (var i in parts) {
+          if (!current[parts[i]]) {
+            current[parts[i]] = {};
+          }
+          current = current[parts[i]];
+        }
+      };
+
+      for ( var i in namespaceArr ) {
+        obj.namespace(namespaceArr[i]);
+      }
+      return obj;
     }
   };
 
   var EventUtils = {
-
     /**
      * 事件绑定函数，兼容浏览器的不同方式的事件绑定
-     * @param {绑定事件的元素} elem 
-     * @param {绑定事件的类型} type 
-     * @param {绑定事件的处理函数} handler 
+     * @param {绑定事件的元素} elem
+     * @param {绑定事件的类型} type
+     * @param {绑定事件的处理函数} handler
      */
     addEvent: function(elem, type, handler) {
       if (window.addEventListener) {
@@ -308,7 +329,7 @@
     event: EventUtils
   };
 
-  DarryUtils.desc = function () {
+  DarryUtils.desc = function() {
     console.log(DarryUtils);
   };
 
