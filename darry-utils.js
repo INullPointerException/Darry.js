@@ -1,5 +1,6 @@
 (function(window, document) {
   var ArrayUtils = {
+    
     removeTextOfArray: function(array, removeText) {
       var dx = -1;
       for (var i = 0, n = 0; i < array.length; i++) {
@@ -12,6 +13,51 @@
         return false;
       }
       array.splice(dx, 1);
+    },
+
+    isEqual: function( array1, array2 ) {
+      var Iterator = function(obj) {
+        var current = 0;
+
+        var next = function() {
+          current += 1;
+        };
+
+        var isDone = function() {
+          return current >= obj.length;
+        };
+
+        var getCurrItem = function() {
+          return obj[current];
+        };
+
+        var getLength = function() {
+          return obj.length;
+        };
+
+        return {
+          next: next,
+          isDone: isDone,
+          getCurrItem: getCurrItem,
+          getLength: getLength
+        };
+      };
+
+      var iterator1 = Iterator( array1 );
+      var iterator2 = Iterator( array2 );
+
+      let isEqual = true;
+      if (iterator1.getLength() !== iterator2.getLength()) {
+        return (isEqual = false);
+      }
+      while (!iterator1.isDone() && !iterator2.isDone()) {
+        if (iterator1.getCurrItem() !== iterator2.getCurrItem()) {
+          isEqual = false;
+        }
+        iterator1.next();
+        iterator2.next();
+      }
+      return isEqual;
     }
   };
 
@@ -221,7 +267,7 @@
 
     /**
      * 函数节流， 防止函数频繁被调用
-     * @param { 需要节流处理的寒素 } fn
+     * @param { 需要节流处理的函数 } fn
      * @param { 防止重复调用的时间间隔 } interval
      */
     throttle: function(fn, interval) {
@@ -294,7 +340,7 @@
         }
       };
 
-      for ( var i in namespaceArr ) {
+      for (var i in namespaceArr) {
         obj.namespace(namespaceArr[i]);
       }
       return obj;
