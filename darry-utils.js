@@ -161,6 +161,26 @@
   };
 
   var CommonUtils = {
+    /**
+     * 检测手机号合法性
+     * @param {待检测手机号} phoneNumber
+     */
+    checkPhone: function(phoneNumber) {
+      if (!/^1[3456789]\d{9}$/.test(phoneNumber)) {
+        return false;
+      } else {
+        return true;
+      }
+    },
+
+    checkTel: function(value) {
+      if (!/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(tel)) {
+        return false;
+      } else {
+        return true;
+      }
+    },
+    
     //身份证号合法性校验,可以校验15位和18位的身份证号
     IdentityCodeValid: function(sfzh) {
       var checkMonthDay = function(year, month, day) {
